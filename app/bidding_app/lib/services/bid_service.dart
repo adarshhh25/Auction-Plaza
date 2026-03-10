@@ -14,7 +14,7 @@ class BidService {
     return await _apiClient.post<BidResponse>(
       ApiConfig.placeBid,
       data: request.toJson(),
-      fromJson: (json) => BidResponse.fromJson(json),
+      fromJson: (json) => BidResponse.fromJson(json['data']),
     );
   }
 
@@ -23,7 +23,7 @@ class BidService {
     return await _apiClient.get<List<Bid>>(
       ApiConfig.bidsForAuction(auctionId),
       fromJson: (json) {
-        final bids = json['bids'] as List;
+        final bids = json['data']['bids'] as List;
         return bids.map((b) => Bid.fromJson(b)).toList();
       },
     );
@@ -34,7 +34,7 @@ class BidService {
     return await _apiClient.get<List<Bid>>(
       ApiConfig.myBids,
       fromJson: (json) {
-        final bids = json['bids'] as List;
+        final bids = json['data']['bids'] as List;
         return bids.map((b) => Bid.fromJson(b)).toList();
       },
     );
@@ -45,7 +45,7 @@ class BidService {
     return await _apiClient.get<List<Bid>>(
       ApiConfig.winningBids,
       fromJson: (json) {
-        final bids = json['bids'] as List;
+        final bids = json['data']['bids'] as List;
         return bids.map((b) => Bid.fromJson(b)).toList();
       },
     );

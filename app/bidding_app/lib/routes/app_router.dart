@@ -11,32 +11,63 @@ import '../screens/bids/my_bids_screen.dart';
 import '../screens/wallet/wallet_screen.dart';
 import '../screens/profile/profile_screen.dart';
 
+/// GoRouter Refresh Notifier
+/// 
+/// Used to rebuild GoRouter when authentication state changes.
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(this._ref) {
+    _ref.listen(authProvider, (previous, next) {
+      // Notify router to rebuild when auth state changes
+      if (previous?.isAuthenticated != next.isAuthenticated ||
+          previous?.isLoading != next.isLoading) {
+        print('🔄 Router refresh triggered - Auth changed');
+        notifyListeners();
+      }
+    });
+  }
+
+  final Ref _ref;
+}
+
 /// App Router Configuration
 /// 
 /// Handles navigation and route guards with GoRouter.
 final goRouterProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
-
+  final refreshNotifier = GoRouterRefreshStream(ref);
+  
   return GoRouter(
     initialLocation: '/splash',
+    refreshListenable: refreshNotifier,
     redirect: (context, state) {
+      final authState = ref.read(authProvider);
       final isAuthenticated = authState.isAuthenticated;
+      final isLoading = authState.isLoading;
       final isAuthRoute = state.matchedLocation.startsWith('/login') ||
           state.matchedLocation.startsWith('/register');
       final isSplash = state.matchedLocation == '/splash';
 
-      // Show splash first
+      print('🧭 Router redirect: ${state.matchedLocation} | Auth: $isAuthenticated | Loading: $isLoading');
+
+      // Show splash first - always allow
       if (isSplash) {
+        return null;
+      }
+
+      // Don't redirect while auth is being checked (unless on splash)
+      if (isLoading && !isSplash) {
+        print('⏳ Auth still loading, staying on current route');
         return null;
       }
 
       // If not authenticated and trying to access protected route
       if (!isAuthenticated && !isAuthRoute) {
+        print('🔒 Not authenticated, redirecting to /login');
         return '/login';
       }
 
       // If authenticated and trying to access auth routes
       if (isAuthenticated && isAuthRoute) {
+        print('✅ Authenticated on auth route, redirecting to /home');
         return '/home';
       }
 

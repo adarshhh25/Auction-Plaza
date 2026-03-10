@@ -28,12 +28,13 @@ class AuthService {
         'role': role,
         if (phone != null) 'phone': phone,
       },
-      fromJson: (json) => AuthResponse.fromJson(json),
+      fromJson: (json) => AuthResponse.fromJson(json['data']),
     );
 
     // Save tokens and user data on success
     if (response.success && response.data != null) {
-      await _storage.saveTokens(response.data!.tokens);
+      await _storage.saveAccessToken(response.data!.accessToken);
+      await _storage.saveRefreshToken(response.data!.refreshToken);
       await _storage.saveUser(response.data!.user);
     }
 
@@ -51,12 +52,13 @@ class AuthService {
         'email': email,
         'password': password,
       },
-      fromJson: (json) => AuthResponse.fromJson(json),
+      fromJson: (json) => AuthResponse.fromJson(json['data']),
     );
 
     // Save tokens and user data on success
     if (response.success && response.data != null) {
-      await _storage.saveTokens(response.data!.tokens);
+      await _storage.saveAccessToken(response.data!.accessToken);
+      await _storage.saveRefreshToken(response.data!.refreshToken);
       await _storage.saveUser(response.data!.user);
     }
 
@@ -99,7 +101,7 @@ class AuthService {
       final response = await _apiClient.post(
         ApiConfig.refresh,
         data: {'refreshToken': refreshToken},
-        fromJson: (json) => json,
+        fromJson: (json) => json['data'],
       );
 
       if (response.success && response.data != null) {

@@ -56,13 +56,15 @@ async function startServer() {
     // ========================================
 
     const PORT = config.port;
+    const HOST = '0.0.0.0'; // Listen on all network interfaces
 
-    httpServer.listen(PORT, () => {
+    httpServer.listen(PORT, HOST, () => {
       logger.info('='.repeat(50));
       logger.info(`🚀 Server started successfully!`);
       logger.info(`📡 Environment: ${config.node_env}`);
-      logger.info(`🌐 Server running on port: ${PORT}`);
+      logger.info(`🌐 Server running on: ${HOST}:${PORT}`);
       logger.info(`🔗 API: http://localhost:${PORT}/api/v1`);
+      logger.info(`📱 Android Emulator: http://10.0.2.2:${PORT}/api/v1`);
       logger.info(`🔌 WebSocket: ws://localhost:${PORT}/bidding`);
       logger.info(`💚 Health Check: http://localhost:${PORT}/health`);
       logger.info('='.repeat(50));

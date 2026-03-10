@@ -11,10 +11,21 @@ class ApiError {
   });
 
   factory ApiError.fromJson(Map<String, dynamic> json) {
+    // Handle error field - it can be a String, Map, or null
+    String? errorString;
+    if (json['error'] != null) {
+      if (json['error'] is String) {
+        errorString = json['error'];
+      } else if (json['error'] is Map) {
+        // Convert error object to string representation
+        errorString = json['error'].toString();
+      }
+    }
+    
     return ApiError(
       message: json['message'] ?? 'An error occurred',
-      statusCode: json['statusCode'],
-      error: json['error'],
+      statusCode: json['statusCode'] ?? json['error']?['statusCode'],
+      error: errorString,
     );
   }
 

@@ -15,7 +15,7 @@ class UserService {
   Future<ApiResponse<User>> getProfile() async {
     return await _apiClient.get<User>(
       ApiConfig.profile,
-      fromJson: (json) => User.fromJson(json['user']),
+      fromJson: (json) => User.fromJson(json['data']['user']),
     );
   }
 
@@ -32,7 +32,7 @@ class UserService {
         if (phone != null) 'phone': phone,
         if (avatar != null) 'avatar': avatar,
       },
-      fromJson: (json) => User.fromJson(json['user']),
+      fromJson: (json) => User.fromJson(json['data']['user']),
     );
 
     // Update stored user data on success
@@ -47,7 +47,7 @@ class UserService {
   Future<ApiResponse<WalletBalance>> getWalletBalance() async {
     return await _apiClient.get<WalletBalance>(
       ApiConfig.walletBalance,
-      fromJson: (json) => WalletBalance.fromJson(json['wallet']),
+      fromJson: (json) => WalletBalance.fromJson(json['data']['wallet']),
     );
   }
 
@@ -56,7 +56,7 @@ class UserService {
     return await _apiClient.post<WalletBalance>(
       ApiConfig.addToWallet,
       data: {'amount': amount},
-      fromJson: (json) => WalletBalance.fromJson(json['wallet']),
+      fromJson: (json) => WalletBalance.fromJson(json['data']['wallet']),
     );
   }
 }

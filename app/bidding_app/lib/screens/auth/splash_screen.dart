@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:async';
+import '../../providers/auth_provider.dart';
 
 /// Splash Screen
 /// 
@@ -20,9 +22,50 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _navigateToNext() async {
-    // Show splash for 2 seconds
-    await Future.delayed(const Duration(seconds: 2));
-    // Navigation will be handled by GoRouter based on auth state
+    try {
+      // Show splash for minimum 2 seconds for better UX
+      await Future.delayed(const Duration(seconds: 2));
+      
+      // Check if still mounted
+      if (!mounted) return;
+      
+      debugPrint('🚀 Splash: Starting navigation...');
+      
+      // Wait for auth check to complete with timeout
+      final authNotifier = ref.read(authProvider.notifier);
+      int attempts = 0;
+      while (ref.read(authProvider).isLoading && attempts < 5) {
+        await Future.delayed(const Duration(milliseconds: 200));
+        attempts++;
+        debugPrint('⏳ Splash: Waiting for auth check... ($attempts/5)');
+      }
+      
+      if (!mounted) return;
+      
+      // Check authentication status
+      final authState = ref.read(authProvider);
+      
+      // Debug log
+      debugPrint('🔍 Splash: Auth Status - ${authState.isAuthenticated}');
+      debugPrint('🔍 Splash: Loading - ${authState.isLoading}');
+      debugPrint('🔍 Splash: User - ${authState.user?.name ?? "null"}');
+      
+      // Force navigation based on auth status
+      if (authState.isAuthenticated && authState.user != null) {
+        debugPrint('✅ Navigating to /home');
+        if (mounted) context.go('/home');
+      } else {
+        debugPrint('✅ Navigating to /login');
+        if (mounted) context.go('/login');
+      }
+    } catch (e, stackTrace) {
+      // If anything fails, navigate to login as fallback
+      debugPrint('❌ Splash error: $e');
+      debugPrint('Stack trace: $stackTrace');
+      if (mounted) {
+        context.go('/login');
+      }
+    }
   }
 
   @override

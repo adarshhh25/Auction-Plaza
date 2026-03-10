@@ -24,7 +24,7 @@ class AuctionService {
         if (status != null) 'status': status,
         if (category != null) 'category': category,
       },
-      fromJson: (json) => AuctionListResponse.fromJson(json),
+      fromJson: (json) => AuctionListResponse.fromJson(json['data']),
     );
   }
 
@@ -32,7 +32,7 @@ class AuctionService {
   Future<ApiResponse<Auction>> getAuctionById(String id) async {
     return await _apiClient.get<Auction>(
       ApiConfig.auctionById(id),
-      fromJson: (json) => Auction.fromJson(json['auction']),
+      fromJson: (json) => Auction.fromJson(json['data']['auction']),
     );
   }
 
@@ -41,7 +41,7 @@ class AuctionService {
     return await _apiClient.get<List<Auction>>(
       ApiConfig.myAuctions,
       fromJson: (json) {
-        final auctions = json['auctions'] as List;
+        final auctions = json['data']['auctions'] as List;
         return auctions.map((a) => Auction.fromJson(a)).toList();
       },
     );
@@ -52,7 +52,7 @@ class AuctionService {
     return await _apiClient.post<Auction>(
       ApiConfig.auctions,
       data: request.toJson(),
-      fromJson: (json) => Auction.fromJson(json['auction']),
+      fromJson: (json) => Auction.fromJson(json['data']['auction']),
     );
   }
 
@@ -64,7 +64,7 @@ class AuctionService {
     return await _apiClient.patch<Auction>(
       ApiConfig.updateAuctionStatus(id),
       data: {'status': status},
-      fromJson: (json) => Auction.fromJson(json['auction']),
+      fromJson: (json) => Auction.fromJson(json['data']['auction']),
     );
   }
 
@@ -73,7 +73,7 @@ class AuctionService {
     return await _apiClient.get<AuctionListResponse>(
       ApiConfig.auctions,
       queryParameters: {'search': query},
-      fromJson: (json) => AuctionListResponse.fromJson(json),
+      fromJson: (json) => AuctionListResponse.fromJson(json['data']),
     );
   }
 }

@@ -21,12 +21,14 @@ User _$UserFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$User {
-  @JsonKey(name: '_id')
-  String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'id')
+  String get id => throw _privateConstructorUsedError; // Backend returns 'id', not '_id'
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
-  WalletBalance get wallet => throw _privateConstructorUsedError;
+  @JsonKey(name: 'walletBalance')
+  double get walletBalance => throw _privateConstructorUsedError; // Backend returns number, not object
+  bool get isVerified => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
   String? get avatar => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
@@ -47,18 +49,17 @@ abstract class $UserCopyWith<$Res> {
       _$UserCopyWithImpl<$Res, User>;
   @useResult
   $Res call({
-    @JsonKey(name: '_id') String id,
+    @JsonKey(name: 'id') String id,
     String name,
     String email,
     String role,
-    WalletBalance wallet,
+    @JsonKey(name: 'walletBalance') double walletBalance,
+    bool isVerified,
     String? phone,
     String? avatar,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
-
-  $WalletBalanceCopyWith<$Res> get wallet;
 }
 
 /// @nodoc
@@ -80,7 +81,8 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? name = null,
     Object? email = null,
     Object? role = null,
-    Object? wallet = null,
+    Object? walletBalance = null,
+    Object? isVerified = null,
     Object? phone = freezed,
     Object? avatar = freezed,
     Object? createdAt = freezed,
@@ -104,10 +106,14 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
                 ? _value.role
                 : role // ignore: cast_nullable_to_non_nullable
                       as String,
-            wallet: null == wallet
-                ? _value.wallet
-                : wallet // ignore: cast_nullable_to_non_nullable
-                      as WalletBalance,
+            walletBalance: null == walletBalance
+                ? _value.walletBalance
+                : walletBalance // ignore: cast_nullable_to_non_nullable
+                      as double,
+            isVerified: null == isVerified
+                ? _value.isVerified
+                : isVerified // ignore: cast_nullable_to_non_nullable
+                      as bool,
             phone: freezed == phone
                 ? _value.phone
                 : phone // ignore: cast_nullable_to_non_nullable
@@ -128,16 +134,6 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           as $Val,
     );
   }
-
-  /// Create a copy of User
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $WalletBalanceCopyWith<$Res> get wallet {
-    return $WalletBalanceCopyWith<$Res>(_value.wallet, (value) {
-      return _then(_value.copyWith(wallet: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -149,19 +145,17 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @override
   @useResult
   $Res call({
-    @JsonKey(name: '_id') String id,
+    @JsonKey(name: 'id') String id,
     String name,
     String email,
     String role,
-    WalletBalance wallet,
+    @JsonKey(name: 'walletBalance') double walletBalance,
+    bool isVerified,
     String? phone,
     String? avatar,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
-
-  @override
-  $WalletBalanceCopyWith<$Res> get wallet;
 }
 
 /// @nodoc
@@ -180,7 +174,8 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? name = null,
     Object? email = null,
     Object? role = null,
-    Object? wallet = null,
+    Object? walletBalance = null,
+    Object? isVerified = null,
     Object? phone = freezed,
     Object? avatar = freezed,
     Object? createdAt = freezed,
@@ -204,10 +199,14 @@ class __$$UserImplCopyWithImpl<$Res>
             ? _value.role
             : role // ignore: cast_nullable_to_non_nullable
                   as String,
-        wallet: null == wallet
-            ? _value.wallet
-            : wallet // ignore: cast_nullable_to_non_nullable
-                  as WalletBalance,
+        walletBalance: null == walletBalance
+            ? _value.walletBalance
+            : walletBalance // ignore: cast_nullable_to_non_nullable
+                  as double,
+        isVerified: null == isVerified
+            ? _value.isVerified
+            : isVerified // ignore: cast_nullable_to_non_nullable
+                  as bool,
         phone: freezed == phone
             ? _value.phone
             : phone // ignore: cast_nullable_to_non_nullable
@@ -233,11 +232,12 @@ class __$$UserImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UserImpl implements _User {
   const _$UserImpl({
-    @JsonKey(name: '_id') required this.id,
+    @JsonKey(name: 'id') required this.id,
     required this.name,
     required this.email,
     required this.role,
-    required this.wallet,
+    @JsonKey(name: 'walletBalance') this.walletBalance = 0.0,
+    this.isVerified = false,
     this.phone,
     this.avatar,
     this.createdAt,
@@ -248,8 +248,9 @@ class _$UserImpl implements _User {
       _$$UserImplFromJson(json);
 
   @override
-  @JsonKey(name: '_id')
+  @JsonKey(name: 'id')
   final String id;
+  // Backend returns 'id', not '_id'
   @override
   final String name;
   @override
@@ -257,7 +258,12 @@ class _$UserImpl implements _User {
   @override
   final String role;
   @override
-  final WalletBalance wallet;
+  @JsonKey(name: 'walletBalance')
+  final double walletBalance;
+  // Backend returns number, not object
+  @override
+  @JsonKey()
+  final bool isVerified;
   @override
   final String? phone;
   @override
@@ -269,7 +275,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, email: $email, role: $role, wallet: $wallet, phone: $phone, avatar: $avatar, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'User(id: $id, name: $name, email: $email, role: $role, walletBalance: $walletBalance, isVerified: $isVerified, phone: $phone, avatar: $avatar, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -281,7 +287,10 @@ class _$UserImpl implements _User {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.role, role) || other.role == role) &&
-            (identical(other.wallet, wallet) || other.wallet == wallet) &&
+            (identical(other.walletBalance, walletBalance) ||
+                other.walletBalance == walletBalance) &&
+            (identical(other.isVerified, isVerified) ||
+                other.isVerified == isVerified) &&
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
             (identical(other.createdAt, createdAt) ||
@@ -298,7 +307,8 @@ class _$UserImpl implements _User {
     name,
     email,
     role,
-    wallet,
+    walletBalance,
+    isVerified,
     phone,
     avatar,
     createdAt,
@@ -321,11 +331,12 @@ class _$UserImpl implements _User {
 
 abstract class _User implements User {
   const factory _User({
-    @JsonKey(name: '_id') required final String id,
+    @JsonKey(name: 'id') required final String id,
     required final String name,
     required final String email,
     required final String role,
-    required final WalletBalance wallet,
+    @JsonKey(name: 'walletBalance') final double walletBalance,
+    final bool isVerified,
     final String? phone,
     final String? avatar,
     final DateTime? createdAt,
@@ -335,8 +346,8 @@ abstract class _User implements User {
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
   @override
-  @JsonKey(name: '_id')
-  String get id;
+  @JsonKey(name: 'id')
+  String get id; // Backend returns 'id', not '_id'
   @override
   String get name;
   @override
@@ -344,7 +355,10 @@ abstract class _User implements User {
   @override
   String get role;
   @override
-  WalletBalance get wallet;
+  @JsonKey(name: 'walletBalance')
+  double get walletBalance; // Backend returns number, not object
+  @override
+  bool get isVerified;
   @override
   String? get phone;
   @override
@@ -359,6 +373,220 @@ abstract class _User implements User {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$UserImplCopyWith<_$UserImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) {
+  return _AuthResponse.fromJson(json);
+}
+
+/// @nodoc
+mixin _$AuthResponse {
+  User get user => throw _privateConstructorUsedError;
+  String get accessToken =>
+      throw _privateConstructorUsedError; // Backend returns these at top level, not nested
+  String get refreshToken => throw _privateConstructorUsedError;
+
+  /// Serializes this AuthResponse to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of AuthResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $AuthResponseCopyWith<AuthResponse> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AuthResponseCopyWith<$Res> {
+  factory $AuthResponseCopyWith(
+    AuthResponse value,
+    $Res Function(AuthResponse) then,
+  ) = _$AuthResponseCopyWithImpl<$Res, AuthResponse>;
+  @useResult
+  $Res call({User user, String accessToken, String refreshToken});
+
+  $UserCopyWith<$Res> get user;
+}
+
+/// @nodoc
+class _$AuthResponseCopyWithImpl<$Res, $Val extends AuthResponse>
+    implements $AuthResponseCopyWith<$Res> {
+  _$AuthResponseCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of AuthResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? user = null,
+    Object? accessToken = null,
+    Object? refreshToken = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            user: null == user
+                ? _value.user
+                : user // ignore: cast_nullable_to_non_nullable
+                      as User,
+            accessToken: null == accessToken
+                ? _value.accessToken
+                : accessToken // ignore: cast_nullable_to_non_nullable
+                      as String,
+            refreshToken: null == refreshToken
+                ? _value.refreshToken
+                : refreshToken // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
+  }
+
+  /// Create a copy of AuthResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserCopyWith<$Res> get user {
+    return $UserCopyWith<$Res>(_value.user, (value) {
+      return _then(_value.copyWith(user: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$AuthResponseImplCopyWith<$Res>
+    implements $AuthResponseCopyWith<$Res> {
+  factory _$$AuthResponseImplCopyWith(
+    _$AuthResponseImpl value,
+    $Res Function(_$AuthResponseImpl) then,
+  ) = __$$AuthResponseImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({User user, String accessToken, String refreshToken});
+
+  @override
+  $UserCopyWith<$Res> get user;
+}
+
+/// @nodoc
+class __$$AuthResponseImplCopyWithImpl<$Res>
+    extends _$AuthResponseCopyWithImpl<$Res, _$AuthResponseImpl>
+    implements _$$AuthResponseImplCopyWith<$Res> {
+  __$$AuthResponseImplCopyWithImpl(
+    _$AuthResponseImpl _value,
+    $Res Function(_$AuthResponseImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of AuthResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? user = null,
+    Object? accessToken = null,
+    Object? refreshToken = null,
+  }) {
+    return _then(
+      _$AuthResponseImpl(
+        user: null == user
+            ? _value.user
+            : user // ignore: cast_nullable_to_non_nullable
+                  as User,
+        accessToken: null == accessToken
+            ? _value.accessToken
+            : accessToken // ignore: cast_nullable_to_non_nullable
+                  as String,
+        refreshToken: null == refreshToken
+            ? _value.refreshToken
+            : refreshToken // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$AuthResponseImpl implements _AuthResponse {
+  const _$AuthResponseImpl({
+    required this.user,
+    required this.accessToken,
+    required this.refreshToken,
+  });
+
+  factory _$AuthResponseImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AuthResponseImplFromJson(json);
+
+  @override
+  final User user;
+  @override
+  final String accessToken;
+  // Backend returns these at top level, not nested
+  @override
+  final String refreshToken;
+
+  @override
+  String toString() {
+    return 'AuthResponse(user: $user, accessToken: $accessToken, refreshToken: $refreshToken)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AuthResponseImpl &&
+            (identical(other.user, user) || other.user == user) &&
+            (identical(other.accessToken, accessToken) ||
+                other.accessToken == accessToken) &&
+            (identical(other.refreshToken, refreshToken) ||
+                other.refreshToken == refreshToken));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, user, accessToken, refreshToken);
+
+  /// Create a copy of AuthResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AuthResponseImplCopyWith<_$AuthResponseImpl> get copyWith =>
+      __$$AuthResponseImplCopyWithImpl<_$AuthResponseImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AuthResponseImplToJson(this);
+  }
+}
+
+abstract class _AuthResponse implements AuthResponse {
+  const factory _AuthResponse({
+    required final User user,
+    required final String accessToken,
+    required final String refreshToken,
+  }) = _$AuthResponseImpl;
+
+  factory _AuthResponse.fromJson(Map<String, dynamic> json) =
+      _$AuthResponseImpl.fromJson;
+
+  @override
+  User get user;
+  @override
+  String get accessToken; // Backend returns these at top level, not nested
+  @override
+  String get refreshToken;
+
+  /// Create a copy of AuthResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AuthResponseImplCopyWith<_$AuthResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -511,229 +739,6 @@ abstract class _WalletBalance implements WalletBalance {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WalletBalanceImplCopyWith<_$WalletBalanceImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) {
-  return _AuthResponse.fromJson(json);
-}
-
-/// @nodoc
-mixin _$AuthResponse {
-  String get message => throw _privateConstructorUsedError;
-  User get user => throw _privateConstructorUsedError;
-  Tokens get tokens => throw _privateConstructorUsedError;
-
-  /// Serializes this AuthResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of AuthResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $AuthResponseCopyWith<AuthResponse> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $AuthResponseCopyWith<$Res> {
-  factory $AuthResponseCopyWith(
-    AuthResponse value,
-    $Res Function(AuthResponse) then,
-  ) = _$AuthResponseCopyWithImpl<$Res, AuthResponse>;
-  @useResult
-  $Res call({String message, User user, Tokens tokens});
-
-  $UserCopyWith<$Res> get user;
-  $TokensCopyWith<$Res> get tokens;
-}
-
-/// @nodoc
-class _$AuthResponseCopyWithImpl<$Res, $Val extends AuthResponse>
-    implements $AuthResponseCopyWith<$Res> {
-  _$AuthResponseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of AuthResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? message = null,
-    Object? user = null,
-    Object? tokens = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            message: null == message
-                ? _value.message
-                : message // ignore: cast_nullable_to_non_nullable
-                      as String,
-            user: null == user
-                ? _value.user
-                : user // ignore: cast_nullable_to_non_nullable
-                      as User,
-            tokens: null == tokens
-                ? _value.tokens
-                : tokens // ignore: cast_nullable_to_non_nullable
-                      as Tokens,
-          )
-          as $Val,
-    );
-  }
-
-  /// Create a copy of AuthResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $UserCopyWith<$Res> get user {
-    return $UserCopyWith<$Res>(_value.user, (value) {
-      return _then(_value.copyWith(user: value) as $Val);
-    });
-  }
-
-  /// Create a copy of AuthResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $TokensCopyWith<$Res> get tokens {
-    return $TokensCopyWith<$Res>(_value.tokens, (value) {
-      return _then(_value.copyWith(tokens: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$AuthResponseImplCopyWith<$Res>
-    implements $AuthResponseCopyWith<$Res> {
-  factory _$$AuthResponseImplCopyWith(
-    _$AuthResponseImpl value,
-    $Res Function(_$AuthResponseImpl) then,
-  ) = __$$AuthResponseImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String message, User user, Tokens tokens});
-
-  @override
-  $UserCopyWith<$Res> get user;
-  @override
-  $TokensCopyWith<$Res> get tokens;
-}
-
-/// @nodoc
-class __$$AuthResponseImplCopyWithImpl<$Res>
-    extends _$AuthResponseCopyWithImpl<$Res, _$AuthResponseImpl>
-    implements _$$AuthResponseImplCopyWith<$Res> {
-  __$$AuthResponseImplCopyWithImpl(
-    _$AuthResponseImpl _value,
-    $Res Function(_$AuthResponseImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of AuthResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? message = null,
-    Object? user = null,
-    Object? tokens = null,
-  }) {
-    return _then(
-      _$AuthResponseImpl(
-        message: null == message
-            ? _value.message
-            : message // ignore: cast_nullable_to_non_nullable
-                  as String,
-        user: null == user
-            ? _value.user
-            : user // ignore: cast_nullable_to_non_nullable
-                  as User,
-        tokens: null == tokens
-            ? _value.tokens
-            : tokens // ignore: cast_nullable_to_non_nullable
-                  as Tokens,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$AuthResponseImpl implements _AuthResponse {
-  const _$AuthResponseImpl({
-    required this.message,
-    required this.user,
-    required this.tokens,
-  });
-
-  factory _$AuthResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AuthResponseImplFromJson(json);
-
-  @override
-  final String message;
-  @override
-  final User user;
-  @override
-  final Tokens tokens;
-
-  @override
-  String toString() {
-    return 'AuthResponse(message: $message, user: $user, tokens: $tokens)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AuthResponseImpl &&
-            (identical(other.message, message) || other.message == message) &&
-            (identical(other.user, user) || other.user == user) &&
-            (identical(other.tokens, tokens) || other.tokens == tokens));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, message, user, tokens);
-
-  /// Create a copy of AuthResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AuthResponseImplCopyWith<_$AuthResponseImpl> get copyWith =>
-      __$$AuthResponseImplCopyWithImpl<_$AuthResponseImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$AuthResponseImplToJson(this);
-  }
-}
-
-abstract class _AuthResponse implements AuthResponse {
-  const factory _AuthResponse({
-    required final String message,
-    required final User user,
-    required final Tokens tokens,
-  }) = _$AuthResponseImpl;
-
-  factory _AuthResponse.fromJson(Map<String, dynamic> json) =
-      _$AuthResponseImpl.fromJson;
-
-  @override
-  String get message;
-  @override
-  User get user;
-  @override
-  Tokens get tokens;
-
-  /// Create a copy of AuthResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AuthResponseImplCopyWith<_$AuthResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

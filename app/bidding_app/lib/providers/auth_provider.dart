@@ -41,17 +41,46 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   /// Check if user is already logged in
   Future<void> _checkAuthStatus() async {
-    state = state.copyWith(isLoading: true);
-    
-    final isLoggedIn = await _authService.isLoggedIn();
-    if (isLoggedIn) {
-      final user = await _authService.getCurrentUser();
-      state = state.copyWith(
-        user: user,
-        isAuthenticated: true,
-        isLoading: false,
-      );
-    } else {
+    try {
+      state = state.copyWith(isLoading: true);
+      
+      // Add timeout to prevent hanging
+      final isLoggedIn = await _authService.isLoggedIn()
+        .timeout(
+          const Duration(seconds: 2),
+          onTimeout: () {
+            print('⚠️ Auth check timeout - assuming not logged in');
+            return false;
+          },
+        );
+      
+      if (isLoggedIn) {
+        final user = await _authService.getCurrentUser()
+          .timeout(
+            const Duration(seconds: 2),
+            onTimeout: () {
+              print('⚠️ User fetch timeout');
+              return null;
+            },
+          );
+        
+        if (user != null) {
+          state = state.copyWith(
+            user: user,
+            isAuthenticated: true,
+            isLoading: false,
+          );
+          print('✅ Auth check: User logged in - ${user.name}');
+        } else {
+          state = state.copyWith(isLoading: false);
+          print('⚠️ Auth check: Token exists but user data missing');
+        }
+      } else {
+        state = state.copyWith(isLoading: false);
+        print('ℹ️ Auth check: No token found - user not logged in');
+      }
+    } catch (e) {
+      print('❌ Auth check error: $e');
       state = state.copyWith(isLoading: false);
     }
   }
